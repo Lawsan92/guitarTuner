@@ -1,0 +1,44 @@
+.tuner{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.notification{
+  margin: 5px;
+}
+
+.tuner-container{
+  display: flex;
+  flex-direction: column;
+  border: solid 1px;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  height: 15vh;
+  width: 15vw;
+}
+
+.top-half{
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+  font-size: 50px;
+}
+
+.bottom-half{
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+}
+
+.pitch-text{
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+}
+
+.tuning-btn {
+  margin: 5px;
+}

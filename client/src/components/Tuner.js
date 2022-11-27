@@ -27,6 +27,24 @@ const noteStrings = [
   "B",
 ];
 
+const standard = {
+  E: 82.41,
+  A: 110,
+  D: 146.8,
+  G: 196,
+  B: 246.9,
+  E: 329.6
+}
+
+const dropD = {
+  D: 73.42,
+  A: 110,
+  D: 146.8,
+  G: 196,
+  B: 246.9,
+  E: 329.6
+}
+
 const Tuner = () => {
 
 /*////AUDIO STATE////*/
@@ -57,10 +75,11 @@ const updatePitch = (time) => {
   }
 };
 
+// repeatedly updates the pitch every 1ms
 setInterval(updatePitch, 1);
 
 useEffect(() => {
-  if (source != null) {
+  if (source) {
     source.connect(analyserNode);
   }
 }, [source]);
@@ -98,7 +117,7 @@ const getMicInput = () => {
       <div className='notification' style={{color: notification ? 'black' : 'white'}}>
       Please, bring your instrument near to the microphone!
       </div>
-      <div className ='container'>
+      <div className ='tuner-container'>
         <div className='screen'>
           <div className='top-half'>
             <span className='note-letter'>{pitchNote}</span>
@@ -113,7 +132,7 @@ const getMicInput = () => {
               width: (detune > 0 ? getDetunePercent(detune) : "50") + "%",
             }}></span>
           </div>
-          <div className='text'>
+          <div className='pitch-text'>
             <span>{pitch}</span>
           </div>
         </div>
