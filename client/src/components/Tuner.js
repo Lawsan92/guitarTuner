@@ -33,7 +33,7 @@ const standard = {
   D: 146.8,
   G: 196,
   B: 246.9,
-  E: 329.6
+  e: 329.6
 }
 
 const dropD = {
@@ -55,6 +55,28 @@ const Tuner = () => {
   const [pitch, setPitch] = useState("0 Hz");
   const [detune, setDetune] = useState("0");
   const [notification, setNotification] = useState(false);
+
+
+/*Low E String */
+  const [ENote, setENote] = useState("E");
+  const [Epitch, setEPitchScale] = useState("2");
+  const [findingE, startFindingE] = useState(false);
+  const [onKey, isOnKey] = useState('Good');
+
+  const isE = () => {
+    let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
+    // console.log('isE{pitch}:', pitchValue)
+    if (standard.E - 5 <= pitchValue && pitchValue <= standard.E + 5) {
+      isOnKey('GOOD');
+    } else if (pitchValue <= standard.E - .2) {
+      isOnKey('b');
+    } else if (pitchValue >= standard.E - .2) {
+      isOnKey('#');
+    }
+  }
+  if (findingE) {setInterval(isE, 100)};
+
+
 
 
 /*////UPDATES PITCH////*/
@@ -114,14 +136,18 @@ const getMicInput = () => {
 
   return (
     <div className='tuner'>
-      <div className='notification' style={{color: notification ? 'black' : 'white'}}>
+      <div className='notification' style={ notification ? {color:'white', backgroundColor: 'lightgrey'} : {color: 'white'}}>
       Please, bring your instrument near to the microphone!
       </div>
+
       <div className ='tuner-container'>
         <div className='screen'>
           <div className='top-half'>
-            <span className='note-letter'>{pitchNote}</span>
-            <span className='note-number'>{pitchScale}</span>
+            <span className='note-letter'
+            style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} :{color: 'black'} )}>
+              {!findingE ? (pitchNote) : (ENote)}
+              </span>
+            <span className='note-number'>{!findingE ? (pitchScale) : (Epitch)}</span>
           </div>
           <div className='bottom-half'>
             <span className='meter-left' style={{
@@ -133,10 +159,11 @@ const getMicInput = () => {
             }}></span>
           </div>
           <div className='pitch-text'>
-            <span>{pitch}</span>
+            <span>{!findingE ? (pitch) : (onKey)}</span>
           </div>
         </div>
       </div>
+
     <div className='tuning-btn'>
       {!started ?
       (<button onClick={() => {start()}}>Start</button>)
@@ -144,6 +171,15 @@ const getMicInput = () => {
       (<button onClick={() => {stop()}}>Stop</button>)
       }
     </div>
+
+    <div className='E-btn'>
+    {!findingE ?
+      (<button onClick={() => {startFindingE(true)}}>E</button>)
+        :
+      (<button onClick={() => {startFindingE(false)}}>E</button>)
+      }
+    </div>
+
     </div>
   )
 }
