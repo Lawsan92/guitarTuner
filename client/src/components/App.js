@@ -1,8 +1,11 @@
 import React from 'react';
+import Tuner from './Tuner.js';
 
 const App = () => {
   return (
-    <div>App</div>
+    <div className='app'>
+      <Tuner/>
+    </div>
   )
 }
 

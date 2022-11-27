@@ -1,15 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
-import React from 'react';
-import App from '../components/App.js';
-import renderer from 'react-test-renderer';
-
-
-
-
-
 (function() {
   'use strict';
 
@@ -426,28 +414,3 @@ import renderer from 'react-test-renderer';
   window.AudioContext = AudioContext;
 
 })();
-
-
-const add3 = jest.fn((x) => {
-  return x +3;
-})
-
-test('use jsdom in this test file', () => {
-  const element = document.createElement('div');
-  expect(element).not.toBeNull();
-});
-
-
-test('add 3', () => {
-  expect(add3(1)).toBe(4);
-  expect(add3).toHaveBeenCalledTimes(1);
-})
-
-it('renders <App> correctly', () => {
-  const tree = renderer
-    .create(
-      <App/>
-     )
-    .toJSON();
-  expect(tree).toMatchSnapshot();
-})

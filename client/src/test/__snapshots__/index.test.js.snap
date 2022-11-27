@@ -1,7 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders <App> correctly 1`] = `
-<div>
-  App
+<div
+  className="app"
+>
+  <div
+    className="tuner"
+  >
+    Tuner
+  </div>
 </div>
 `;
