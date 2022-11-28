@@ -27,6 +27,14 @@ const noteStrings = [
   "B",
 ];
 
+const standard = {
+  E: 82.41,
+  A: 110,
+  D: 146.8,
+  G: 196,
+  B: 246.9,
+  e: 329.6
+}
 const dropD = {
   D: 73.42,
   A: 110,
@@ -52,16 +60,16 @@ const Tuner = () => {
   const [ENote, setENote] = useState("E");
   const [Epitch, setEPitchScale] = useState("2");
   const [findingE, startFindingE] = useState(false);
-  const [onKey, isOnKey] = useState('Good');
+  const [onKey, isOnKey] = useState('Play');
 
   const isE = () => {
     let ac = autoCorrelate(buf, audioCtx.sampleRate); // <- cponverts buffers data into a single pitch value
     if (ac > -1) { // <- this is what triggers the tuner only if a certain sound level is reached
       let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
-      log('buf:', buf);
-      log('audioCtx.sampleRate', audioCtx.sampleRate);
+      // log('buf:', buf);
+      // log('audioCtx.sampleRate', audioCtx.sampleRate);
       log('ac:', ac);
-      log('isE{pitch}:', pitchValue);
+      log('pitchValue:', pitchValue);
       if (standard.E - .75 <= pitchValue && pitchValue <= standard.E + .75) {
         isOnKey('GOOD');
       } else if (pitchValue <= standard.E - .75) {
@@ -74,19 +82,51 @@ const Tuner = () => {
   if (findingE) {setInterval(isE, 100)};
 
 
-  /*A String */
-  const [ANote, setANote] = useState("E");
-  const [Apitch, setAPitchScale] = useState("2");
-  const [findingA, startFindingA] = useState(false);
+//   /*A String */
+//   const [ANote, setANote] = useState("E");
+//   const [Apitch, setAPitchScale] = useState("2");
+//   const [findingA, startFindingA] = useState(false);
 
-  const isA = () => {
-    let ac = autoCorrelate(buf, audioCtx.sampleRate); // <- cponverts buffers data into a single pitch value
-    if (ac > -1) { // <- this is what triggers the tuner only if a certain sound level is reached
-      let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
-      log('buf:', buf);
-      log('audioCtx.sampleRate', audioCtx.sampleRate);
-      log('ac:', ac);
-      log('isA{pitch}:', pitchValue);
+//   const isA = () => {
+//     let ac = autoCorrelate(buf, audioCtx.sampleRate); // <- cponverts buffers data into a single pitch value
+//     if (ac > -1) { // <- this is what triggers the tuner only if a certain sound level is reached
+//       let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
+//       log('buf:', buf);
+//       log('audioCtx.sampleRate', audioCtx.sampleRate);
+//       log('ac:', ac);
+//       log('isA{pitch}:', pitchValue);
+//       if (standard.A - .75 <= pitchValue && pitchValue <= standard.A + .75) {
+//         isOnKey('GOOD');
+//       } else if (pitchValue <= standard.A - .75) {
+//         isOnKey('b');
+//       } else if (pitchValue >= standard.A - .75) {
+//         isOnKey('#');
+//       }
+//     }
+//   }
+//   if (findingA) {setInterval(isA, 100)};
+
+/*////STANDARD TUNING////*/
+const [standardNote, setStandardNote] = useState('');
+const [standardPitch, setStandardPitch] = useState('');
+const [findingStandard, startFindingStandard] = useState({finding: false, note: 'note'});
+
+let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
+log('pitchValue:', pitchValue);
+  const standardTuning = (note) => {
+    const standard = {
+      E: [82.41, 2],
+      A: [110, 2],
+      D: [146.8, 3],
+      G: [196, 3],
+      B: [246.9, 3],
+      e: [329.6, 4]
+    }
+    log('standardTuning{note}:', note);
+    log('standard.note:', standard[note])
+
+    let ac = autoCorrelate(buf, audioCtx.sampleRate);
+    if (ac > -1) {
       if (standard.A - .75 <= pitchValue && pitchValue <= standard.A + .75) {
         isOnKey('GOOD');
       } else if (pitchValue <= standard.A - .75) {
@@ -96,29 +136,7 @@ const Tuner = () => {
       }
     }
   }
-  if (findingA) {setInterval(isA, 100)};
-
-/*////STANDARD TUNING////*/
-const [standardNote, setStandardNote] = useState("E");
-const [standardPitch, setStandardPitch] = useState("2");
-const [findingStandard, startFindingStandard] = useState(false);
-const [onKey, isOnKey] = useState('Good');
-
-  const standardTuning = (note) => {
-    const standard = {
-      E: 82.41,
-      A: 110,
-      D: 146.8,
-      G: 196,
-      B: 246.9,
-      e: 329.6
-    }
-    setStandardNote(standard.note);
-    if (ac > -1) {
-
-    }
-  }
-
+  if (findingStandard.finding) {setInterval(standardTuning(findingStandard.note), 100)};
 
 /*////UPDATES PITCH////*/
 const updatePitch = (time) => {
@@ -184,7 +202,7 @@ const getMicInput = () => {
         <div className='screen'>
           <div className='top-half'>
             <span className='note-letter'
-            style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} :{color: 'black'} )}>
+            style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}>
               {!findingE ? (pitchNote) : (ENote)}
               </span>
             <span style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}className='note-number'>{!findingE ? (pitchScale) : (Epitch)}</span>
@@ -204,30 +222,63 @@ const getMicInput = () => {
         </div>
       </div>
 
-    <div className='tuning-btn'>
-      {!started ?
-      (<button onClick={() => {start()}}>Start</button>)
-        :
-      (<button onClick={() => {stop()}}>Stop</button>)
-      }
-    </div>
+      <div className='tuning-btn'>
+        {!started ?
+        (<button onClick={() => {start()}}>Start</button>)
+          :
+        (<button onClick={() => {stop()}}>Stop</button>)
+        }
+      </div>
 
-    <div>
-    <div className='E-btn'>
-    {!findingE ?
-      (<button onClick={() => {startFindingE(true)}}>E</button>)
-        :
-      (<button onClick={() => {startFindingE(false)}}>E</button>)
-      }
-    </div>
+      <div>
+      <div className='note-btn'>
+      {!findingE ?
+        (<button onClick={() => {startFindingE(true)}}>E</button>)
+          :
+        (<button onClick={() => {startFindingE(false)}}>E</button>)
+        }
+      </div>
 
-    <div className='A-btn'>
-    {!findingA ?
-      (<button onClick={() => {startFindingA(true)}}>A</button>)
-        :
-      (<button onClick={() => {startFindingA(false)}}>A</button>)
-      }
-    </div>
+      <div className='note-btn'>
+      {!findingStandard.finding ?
+        (<button onClick={(e) => {startFindingStandard({...findingStandard, finding: true, note: e.target.innerHTML})}}>A</button>)
+          :
+        (<button onClick={() => {startFindingStandard({...findingStandard, finding: false, note: 'note' })}}>A</button>)
+        }
+      </div>
+
+
+      <div className='note-btn'>
+      {!findingStandard.finding ?
+        (<button onClick={(e) => {startFindingStandard({...findingStandard, finding: true, note: e.target.innerHTML})}}>D</button>)
+          :
+        (<button onClick={() => {startFindingStandard({...findingStandard, finding: false, note: 'note' })}}>D</button>)
+        }
+      </div>
+
+      <div className='note-btn'>
+      {!findingStandard.finding ?
+        (<button onClick={(e) => {startFindingStandard({...findingStandard, finding: true, note: e.target.innerHTML})}}>G</button>)
+          :
+        (<button onClick={() => {startFindingStandard({...findingStandard, finding: false, note: 'note' })}}>G</button>)
+        }
+      </div>
+
+      <div className='note-btn'>
+      {!findingStandard.finding ?
+        (<button onClick={(e) => {startFindingStandard({...findingStandard, finding: true, note: e.target.innerHTML})}}>B</button>)
+          :
+        (<button onClick={() => {startFindingStandard({...findingStandard, finding: false, note: 'note' })}}>B</button>)
+        }
+      </div>
+      <div className='note-btn'>
+      {!findingStandard.finding ?
+        (<button onClick={(e) => {startFindingStandard({...findingStandard, finding: true, note: e.target.innerHTML})}}>e</button>)
+          :
+        (<button onClick={() => {startFindingStandard({...findingStandard, finding: false, note: 'note' })}}>e</button>)
+        }
+      </div>
+
     </div>
     </div>
   )
