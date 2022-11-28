@@ -11,7 +11,7 @@ const audioCtx = AudioContext.getAudioContext();
 const analyserNode = AudioContext.getAnalyser();
 const bufferlength = 2048;
 let buf = new Float32Array(bufferlength);
-
+let log = console.log.bind(console);
 const noteStrings = [
   "C",
   "C#",
@@ -26,15 +26,6 @@ const noteStrings = [
   "A#",
   "B",
 ];
-
-const standard = {
-  E: 82.41,
-  A: 110,
-  D: 146.8,
-  G: 196,
-  B: 246.9,
-  e: 329.6
-}
 
 const dropD = {
   D: 73.42,
@@ -64,19 +55,69 @@ const Tuner = () => {
   const [onKey, isOnKey] = useState('Good');
 
   const isE = () => {
-    let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
-    // console.log('isE{pitch}:', pitchValue)
-    if (standard.E - 5 <= pitchValue && pitchValue <= standard.E + 5) {
-      isOnKey('GOOD');
-    } else if (pitchValue <= standard.E - .2) {
-      isOnKey('b');
-    } else if (pitchValue >= standard.E - .2) {
-      isOnKey('#');
+    let ac = autoCorrelate(buf, audioCtx.sampleRate); // <- cponverts buffers data into a single pitch value
+    if (ac > -1) { // <- this is what triggers the tuner only if a certain sound level is reached
+      let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
+      log('buf:', buf);
+      log('audioCtx.sampleRate', audioCtx.sampleRate);
+      log('ac:', ac);
+      log('isE{pitch}:', pitchValue);
+      if (standard.E - .75 <= pitchValue && pitchValue <= standard.E + .75) {
+        isOnKey('GOOD');
+      } else if (pitchValue <= standard.E - .75) {
+        isOnKey('b');
+      } else if (pitchValue >= standard.E - .75) {
+        isOnKey('#');
+      }
     }
   }
   if (findingE) {setInterval(isE, 100)};
 
 
+  /*A String */
+  const [ANote, setANote] = useState("E");
+  const [Apitch, setAPitchScale] = useState("2");
+  const [findingA, startFindingA] = useState(false);
+
+  const isA = () => {
+    let ac = autoCorrelate(buf, audioCtx.sampleRate); // <- cponverts buffers data into a single pitch value
+    if (ac > -1) { // <- this is what triggers the tuner only if a certain sound level is reached
+      let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
+      log('buf:', buf);
+      log('audioCtx.sampleRate', audioCtx.sampleRate);
+      log('ac:', ac);
+      log('isA{pitch}:', pitchValue);
+      if (standard.A - .75 <= pitchValue && pitchValue <= standard.A + .75) {
+        isOnKey('GOOD');
+      } else if (pitchValue <= standard.A - .75) {
+        isOnKey('b');
+      } else if (pitchValue >= standard.A - .75) {
+        isOnKey('#');
+      }
+    }
+  }
+  if (findingA) {setInterval(isA, 100)};
+
+/*////STANDARD TUNING////*/
+const [standardNote, setStandardNote] = useState("E");
+const [standardPitch, setStandardPitch] = useState("2");
+const [findingStandard, startFindingStandard] = useState(false);
+const [onKey, isOnKey] = useState('Good');
+
+  const standardTuning = (note) => {
+    const standard = {
+      E: 82.41,
+      A: 110,
+      D: 146.8,
+      G: 196,
+      B: 246.9,
+      e: 329.6
+    }
+    setStandardNote(standard.note);
+    if (ac > -1) {
+
+    }
+  }
 
 
 /*////UPDATES PITCH////*/
@@ -93,11 +134,10 @@ const updatePitch = (time) => {
     setPitchScale(scl);
     setDetune(dtune);
     setNotification(false);
-    console.log(note, sym, scl, dtune, ac);
+    // console.log(note, sym, scl, dtune, ac);
   }
 };
 
-// repeatedly updates the pitch every 1ms
 setInterval(updatePitch, 1);
 
 useEffect(() => {
@@ -147,19 +187,19 @@ const getMicInput = () => {
             style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} :{color: 'black'} )}>
               {!findingE ? (pitchNote) : (ENote)}
               </span>
-            <span className='note-number'>{!findingE ? (pitchScale) : (Epitch)}</span>
+            <span style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}className='note-number'>{!findingE ? (pitchScale) : (Epitch)}</span>
           </div>
           <div className='bottom-half'>
             <span className='meter-left' style={{
               width: (detune < 0 ? getDetunePercent(detune) : "50") + "%",
             }}></span>
-            <span className='dial'>|</span>
+            <span style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )} className='dial'>|</span>
             <span className='meter-right' style={{
               width: (detune > 0 ? getDetunePercent(detune) : "50") + "%",
             }}></span>
           </div>
           <div className='pitch-text'>
-            <span>{!findingE ? (pitch) : (onKey)}</span>
+            <span style={ (findingE && onKey === 'b' || findingE && onKey === '#' ) ? {color: 'red'} : (findingE && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}>{!findingE ? (pitch) : (onKey)}</span>
           </div>
         </div>
       </div>
@@ -172,6 +212,7 @@ const getMicInput = () => {
       }
     </div>
 
+    <div>
     <div className='E-btn'>
     {!findingE ?
       (<button onClick={() => {startFindingE(true)}}>E</button>)
@@ -180,6 +221,14 @@ const getMicInput = () => {
       }
     </div>
 
+    <div className='A-btn'>
+    {!findingA ?
+      (<button onClick={() => {startFindingA(true)}}>A</button>)
+        :
+      (<button onClick={() => {startFindingA(false)}}>A</button>)
+      }
+    </div>
+    </div>
     </div>
   )
 }
