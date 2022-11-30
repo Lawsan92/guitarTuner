@@ -140,7 +140,7 @@ const getMicInput = () => {
             style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}>
               {!findingPitch ? (pitchNote) : (note)}
               </span>
-            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}className='note-number'>{!findingPitch ? (pitchScale) : (Epitch)}</span>
+            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}className='note-number'>{pitchScale}</span>
           </div>
           <div className='bottom-half'>
             <span className='meter-left' style={{
@@ -163,7 +163,7 @@ const getMicInput = () => {
         (<button onClick={() => {stop()}}>Stop</button>)
         }
       </div>
-      <div>
+      <div className='strings'>
       {strings.map((string) => {
         return (
           <div className='string'>
