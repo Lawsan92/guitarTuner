@@ -6,7 +6,9 @@ const autoCorrelate = (buf, sampleRate) => {
     let val = buf[i];
     rms += val * val;
   }
+
   rms = Math.sqrt(rms / SIZE);
+
   if (rms < 0.01) {
     // not enough signal
     return -1;
@@ -49,6 +51,7 @@ const autoCorrelate = (buf, sampleRate) => {
       maxpos = i;
     }
   }
+
   let T0 = maxpos;
 
   let [x1, x2, x3] = [c[T0 - 1], c[T0], c[T0 + 1]];
