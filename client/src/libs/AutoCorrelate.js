@@ -1,7 +1,6 @@
 const autoCorrelate = (buf, sampleRate) => {
-
+ const log = console.log.bind(console);
   let [SIZE, rms] = [buf.length, 0];
-
   for (let i = 0; i < SIZE; i++) {
     let val = buf[i];
     rms += val * val;
@@ -28,6 +27,8 @@ const autoCorrelate = (buf, sampleRate) => {
       break;
     }
 
+
+
   buf = buf.slice(r1, r2);
   SIZE = buf.length;
 
@@ -42,6 +43,8 @@ const autoCorrelate = (buf, sampleRate) => {
   while (c[d] > c[d + 1]) {
     d++;
   }
+
+
 
   let [maxval, maxpos] = [-1, -1];
 
@@ -60,6 +63,18 @@ const autoCorrelate = (buf, sampleRate) => {
   if (a) {
     T0 = T0 - b / (2 * a)
   };
+
+
+  console.group("FFT group")
+    log('rms:', rms)
+    log('[r1, r2, thres]:', [r1, r2, thres])
+    log('[c, d]:', [c, d])
+    log('[maxval, maxpos]:', [maxval, maxpos])
+    log('[x1, x2, x3]:', [x1, x2, x3]);
+    log('[a, b]:', [a, b]);
+    log('T0:', T0)
+    log('sampleRate / T0:', sampleRate / T0)
+  console.groupEnd();
 
   return sampleRate / T0;
 };

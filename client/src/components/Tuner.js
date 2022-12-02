@@ -77,6 +77,7 @@ const Tuner = () => {
 
 const updatePitch = (time) => {
   analyserNode.getFloatTimeDomainData(buf);
+  console.log('buf:', buf);
   let ac = autoCorrelate(buf, audioCtx.sampleRate);
   if (ac > -1) {
     let note = noteFromPitch(ac);
@@ -91,8 +92,8 @@ const updatePitch = (time) => {
     // console.log(note, sym, scl, dtune, ac);
   }
 };
-
-setInterval(updatePitch, 1);
+updatePitch();
+// setInterval(updatePitch, 1);
 
 useEffect(() => {
   if (source) {
