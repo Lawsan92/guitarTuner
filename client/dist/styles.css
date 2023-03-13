@@ -3,7 +3,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: black;
 }
+
 
 .notification{
   margin: 5px;
@@ -12,7 +14,7 @@
 .tuner-container{
   display: flex;
   flex-direction: column;
-  border: solid 1px;
+  border: solid 1px white;
   border-radius: 10px;
   justify-content: center;
   align-items: center;

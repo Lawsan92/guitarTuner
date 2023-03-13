@@ -66,6 +66,8 @@ const autoCorrelate = (buf, sampleRate) => {
 
 
   console.group("FFT group")
+    log('buf:', buf)
+    log('sampleRate:', sampleRate)
     log('rms:', rms)
     log('[r1, r2, thres]:', [r1, r2, thres])
     log('[c, d]:', [c, d])

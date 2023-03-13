@@ -77,7 +77,6 @@ const Tuner = () => {
 
 const updatePitch = (time) => {
   analyserNode.getFloatTimeDomainData(buf);
-  console.log('buf:', buf);
   let ac = autoCorrelate(buf, audioCtx.sampleRate);
   if (ac > -1) {
     let note = noteFromPitch(ac);
@@ -92,8 +91,8 @@ const updatePitch = (time) => {
     // console.log(note, sym, scl, dtune, ac);
   }
 };
-updatePitch();
-// setInterval(updatePitch, 1);
+
+setInterval(updatePitch, 1);
 
 useEffect(() => {
   if (source) {
@@ -138,22 +137,22 @@ const getMicInput = () => {
         <div className='screen'>
           <div className='top-half'>
             <span className='note-letter'
-            style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}>
+            style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )}>
               {!findingPitch ? (pitchNote) : (note)}
               </span>
-            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}className='note-number'>{pitchScale}</span>
+            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )}className='note-number'>{pitchScale}</span>
           </div>
           <div className='bottom-half'>
             <span className='meter-left' style={{
               width: (detune < 0 ? getDetunePercent(detune) : "50") + "%",
             }}></span>
-            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )} className='dial'>|</span>
+            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )} className='dial'>|</span>
             <span className='meter-right' style={{
               width: (detune > 0 ? getDetunePercent(detune) : "50") + "%",
             }}></span>
           </div>
           <div className='pitch-text'>
-            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'black'} )}>{!findingPitch ? (pitch) : (onKey)}</span>
+            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )}>{!findingPitch ? (pitch) : (<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}} ><span>{onKey}</span><span>{pitch}</span></div>)}</span>
           </div>
         </div>
       </div>
