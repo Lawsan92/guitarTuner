@@ -1,8 +1,30 @@
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+* {
+  font-family: 'SF Pro Display', sans-serif;
+}
+body {
+  margin: 0;
+  border: 0;
+}
 .tuner{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-image: radial-gradient(#1C2E4A, #1d1d1d);
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+}
+
+
+.note-letter {
+  filter: drop-shadow(rgba(255, 255, 255, 0.4) 0px 4px 4px);
+}
+
+.note-number {
+  filter: drop-shadow(rgba(255, 255, 255, 0.4) 0px 4px 4px);
 }
 
 .notification{
@@ -12,12 +34,10 @@
 .tuner-container{
   display: flex;
   flex-direction: column;
-  border: solid 1px;
-  border-radius: 10px;
+  // border: solid 1px white;
+  // border-radius: 10px;
   justify-content: center;
   align-items: center;
-  height: 15vh;
-  width: 7vw;
 }
 
 .top-half{
