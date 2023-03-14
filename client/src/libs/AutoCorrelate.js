@@ -65,18 +65,18 @@ const autoCorrelate = (buf, sampleRate) => {
   };
 
 
-  console.group("FFT group")
-    log('buf:', buf)
-    log('sampleRate:', sampleRate)
-    log('rms:', rms)
-    log('[r1, r2, thres]:', [r1, r2, thres])
-    log('[c, d]:', [c, d])
-    log('[maxval, maxpos]:', [maxval, maxpos])
-    log('[x1, x2, x3]:', [x1, x2, x3]);
-    log('[a, b]:', [a, b]);
-    log('T0:', T0)
-    log('sampleRate / T0:', sampleRate / T0)
-  console.groupEnd();
+  // console.group("FFT group")
+  //   log('buf:', buf)
+  //   log('sampleRate:', sampleRate)
+  //   log('rms:', rms)
+  //   log('[r1, r2, thres]:', [r1, r2, thres])
+  //   log('[c, d]:', [c, d])
+  //   log('[maxval, maxpos]:', [maxval, maxpos])
+  //   log('[x1, x2, x3]:', [x1, x2, x3]);
+  //   log('[a, b]:', [a, b]);
+  //   log('T0:', T0)
+  //   log('sampleRate / T0:', sampleRate / T0)
+  // console.groupEnd();
 
   return sampleRate / T0;
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AudioContext from '../contexts/AudioContext.js';
+import { AudioContext }from '../contexts/AudioContext.js';
 import autoCorrelate from "../libs/AutoCorrelate.js";
 import {
   noteFromPitch,
@@ -13,20 +13,7 @@ const bufferlength = 2048;
 let buf = new Float32Array(bufferlength);
 let log = console.log.bind(console);
 
-const noteStrings = [
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#",
-  "A",
-  "A#",
-  "B",
-];
+const noteStrings = [ "C", "C#","D", "D#", "E", "F", "F#", "G", "G#","A", "A#", "B" ];
 
 const strings = [['E', 2], ['A', 2], ['D', 3], ['G', 3], ['B', 3], ['e', 4]];
 
@@ -56,19 +43,40 @@ const Tuner = () => {
   const [findingPitch, startFindingPitch] = useState(false);
   const [onKey, isOnKey] = useState('Play');
 
+
+  const styles = {
+    neutral: {
+      color: 'white',
+      filter: 'drop-shadow(rgba(255, 255, 255, 0.4) 0px 4px 4px)'
+    },
+    offKey: {
+      color: 'red',
+      filter: 'drop-shadow(rgba(255, 0, 0, 0.4) 0px 4px 4px)'
+    },
+    onKey: {
+      color: 'lightgreen',
+      filter: 'drop-shadow(rgba(0, 255, 0, 0.4) 0px 4px 4px)'
+    },
+    dial: {
+      neutral: '40px solid white',
+      offKey: '40px solid red',
+      onKey: '40px solid lightgreen',
+    }
+  }
+
   const isStandard = () => {
     let ac = autoCorrelate(buf, audioCtx.sampleRate);
     if (ac > -1) {
       let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
-      log('buf:', buf);
-      log('audioCtx.sampleRate', audioCtx.sampleRate);
-      log('ac:', ac);
-      log('pitchValue:', pitchValue);
-      if (standard[note] - .75 <= pitchValue && pitchValue <= standard[note] + .75) {
+      // log('buf:', buf);
+      // log('audioCtx.sampleRate', audioCtx.sampleRate);
+      // log('ac:', ac);
+      // log('pitchValue:', pitchValue);
+      if (standard[note] - 2 <= pitchValue && pitchValue <= standard[note] + 2) {
         isOnKey('GOOD');
-      } else if (pitchValue <= standard[note] - .75) {
+      } else if (pitchValue <= standard[note] - 2) {
         isOnKey('b');
-      } else if (pitchValue >= standard[note] - .75) {
+      } else if (pitchValue >= standard[note] - 2) {
         isOnKey('#');
       }
     }
@@ -97,6 +105,7 @@ setInterval(updatePitch, 1);
 useEffect(() => {
   if (source) {
     source.connect(analyserNode);
+    setdialPos();
   }
 }, [source]);
 
@@ -128,33 +137,71 @@ const getMicInput = () => {
   });
 };
 
+const pitchStyle = () => {
+  return (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? styles.offKey : (findingPitch && onKey === 'GOOD' ? styles.onKey : styles.neutral );
+};
+
+const [dialPos, getPos] = useState(0);
+
+
+let dependency = 0;
+
+const setdialPos = () => {
+  let ac = autoCorrelate(buf, audioCtx.sampleRate);
+  let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
+  if (ac > -1) {
+    return (standard[note] - 2 <= pitchValue && pitchValue <= standard[note] + 2) ? 0 : (pitchValue <= standard[note] - 2 ? 500 : -500);
+  }
+};
+
+const dialStyles = () => {
+  return (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? styles.dial.offKey : (findingPitch && onKey === 'GOOD' ? styles.dial.onKey : styles.dial.neutral );
+}
+
   return (
     <div className='tuner'>
+      <div className='tuner_tuning'>
+        Standard
+      </div>
       <div className='notification' style={ notification ? {color:'white', backgroundColor: 'lightgrey'} : {color: 'white'}}>
       Please, bring your instrument near to the microphone!
       </div>
       <div className ='tuner-container'>
-        <div className='screen'>
+        <div className='tuner_screen'>
           <div className='top-half'>
             <span className='note-letter'
-            style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )}>
+            style={pitchStyle()}>
               {!findingPitch ? (pitchNote) : (note)}
               </span>
-            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )}className='note-number'>{pitchScale}</span>
+            <span style={pitchStyle()}className='note-number'>{pitchScale}</span>
           </div>
           <div className='bottom-half'>
             <span className='meter-left' style={{
               width: (detune < 0 ? getDetunePercent(detune) : "50") + "%",
             }}></span>
-            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )} className='dial'>|</span>
+            <span style={pitchStyle()} className='dial'>|</span>
             <span className='meter-right' style={{
               width: (detune > 0 ? getDetunePercent(detune) : "50") + "%",
             }}></span>
           </div>
           <div className='pitch-text'>
-            <span style={ (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? {color: 'red'} : (findingPitch && onKey === 'GOOD' ? {color: 'lightgreen'} : {color: 'white'} )}>{!findingPitch ? (pitch) : (<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}} ><span>{onKey}</span><span>{pitch}</span></div>)}</span>
+            <span style={pitchStyle()}>{!findingPitch ? (pitch) : (<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}} ><span>{onKey}</span><span>{pitch}</span></div>)}</span>
           </div>
         </div>
+      </div>
+      <div
+      style={{
+        height: 0,
+        width: 0,
+        position: 'relative',
+        right: `${setdialPos()}px`,
+        borderRight: '3px solid transparent',
+        borderLeft: '3px solid transparent',
+        borderBottom: dialStyles(),
+        transition: '1s ease'
+      }}
+      >
+
       </div>
       <div className='tuning-btn'>
         {!started ?
@@ -163,23 +210,21 @@ const getMicInput = () => {
         (<button onClick={() => {stop()}}>Stop</button>)
         }
       </div>
-      <div className='strings'>
-      {strings.map((string) => {
-        return (
-          <div className='string'>
-          {!findingPitch ?
-            (<button onClick={(e) => {startFindingPitch(true); setNote(string[0]); setPitchScale(string[1])}}> {string[0]} </button>)
-              :
-            (<button onClick={() => {startFindingPitch(false)}}>{string[0]}</button>)
-            }
-          </div>
-          )
+      <div className='tuner_strings'>
+        {strings.map((string) => {
+          return (
+            <div>
+            {!findingPitch ?
+              (<button className='tuner_string' onClick={(e) => {startFindingPitch(true); setNote(string[0]); setPitchScale(string[1])}}> {string[0]} </button>)
+                :
+              (<button className='tuner_string' onClick={() => {startFindingPitch(false)}}>{string[0]}</button>)
+              }
+            </div>
+            )
         })}
       </div>
     </div>
-  )
-
-
+  );
 }
 
 export default Tuner;

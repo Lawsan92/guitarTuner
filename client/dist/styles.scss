@@ -16,15 +16,7 @@ body {
   height: 100vh;
   width: 100vw;
   margin: 0;
-}
-
-
-.note-letter {
-  filter: drop-shadow(rgba(255, 255, 255, 0.4) 0px 4px 4px);
-}
-
-.note-number {
-  filter: drop-shadow(rgba(255, 255, 255, 0.4) 0px 4px 4px);
+  position: relative;
 }
 
 .notification{
@@ -34,23 +26,49 @@ body {
 .tuner-container{
   display: flex;
   flex-direction: column;
-  // border: solid 1px white;
-  // border-radius: 10px;
+  height: 100vh;
+  width: 100vw;;
   justify-content: center;
   align-items: center;
+}
+
+.tuner_tuning{
+  position: relative;
+  justify-self: flex-start;
+  align-self: flex-start;
+  font-size: 3vw;
+  margin: 1vh;
+  color: white;
 }
 
 .top-half{
   display: flex;
   justify-content: center;
   margin: 5px;
-  font-size: 50px;
+  font-size: 6vw;
 }
 
 .bottom-half{
   display: flex;
   justify-content: center;
   margin: 5px;
+}
+
+.tuner_strings {
+  display: flex;
+  align-self: flex-start;
+}
+
+.tuner_string {
+  border: 0;
+  font-size: 2vw;
+  background-color: #5D81A3;
+  color: white;
+  font-weight: 100;
+  &:hover {
+    cursor: pointer;
+    color: #1d1d1d;
+  }
 }
 
 .pitch-text{
