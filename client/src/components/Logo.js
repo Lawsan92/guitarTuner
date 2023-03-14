@@ -2,8 +2,8 @@ import React from 'react';
 
 export const Logo = ({ logoClicked, setPage }) => {
   return (
-    <svg version="1.1" id="Layer_1" width="832px" height="832px" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-	viewBox="0 0 10vh 10vh" enable-background="new 0 0 500 500" onClick={() => {setPage(true)}}>
+    <svg className='logo' version="1.1" id="Layer_1" width="60vh" height="60vh" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+	viewBox="0 0 832 832" enable-background="new 0 0 832 832" onClick={() => {setPage(true)}}>
       <path fill="white" opacity="0.000000" stroke="none"
         d="
       M372.000000,1.000000
@@ -253,7 +253,7 @@ export const Logo = ({ logoClicked, setPage }) => {
     C269.937683,283.140076 276.554688,270.061554 288.409180,266.721222
     C289.843903,266.316925 291.325287,266.078369 293.224060,265.737610
   z"/>
-  </svg>
+    </svg>
   );
 };
 
