@@ -2,39 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { AudioContext }from '../contexts/AudioContext.js';
 import autoCorrelate from "../libs/AutoCorrelate.js";
 import { Navbar } from './Navbar.js';
+import { tunings } from '../data/tunings.js';
 import {
   noteFromPitch,
   centsOffFromPitch,
   getDetunePercent,
 } from "../libs/Helpers.js";
 
+//  WEB AUDIO API functions
 const audioCtx = AudioContext.getAudioContext();
 const analyserNode = AudioContext.getAnalyser();
 const bufferlength = 2048;
 let buf = new Float32Array(bufferlength);
 let log = console.log.bind(console);
 
+
 const noteStrings = [ "C", "C#","D", "D#", "E", "F", "F#", "G", "G#","A", "A#", "B" ];
 
 const strings = [['E', 2], ['A', 2], ['D', 3], ['G', 3], ['B', 3], ['e', 4]];
-
-const standard = {
-  E: 82.41,
-  A: 110,
-  D: 146.8,
-  G: 196,
-  B: 246.9,
-  e: 329.6
-}
 
 const Tuner = () => {
 
 /*////AUDIO STATE////*/
   const [source, setSource] = useState(null);
   const [started, setStart] = useState(false);
-  const [pitchNote, setPitchNote] = useState("C");
-  const [pitchScale, setPitchScale] = useState("4");
-  const [pitch, setPitch] = useState("0 Hz");
+  const [pitchNote, setPitchNote] = useState("-");
+  const [pitchScale, setPitchScale] = useState("");
+  const [pitch, setPitch] = useState("-");
   const [detune, setDetune] = useState("0");
   const [notification, setNotification] = useState(false);
 
@@ -74,11 +68,11 @@ const Tuner = () => {
       // log('audioCtx.sampleRate', audioCtx.sampleRate);
       // log('ac:', ac);
       // log('pitchValue:', pitchValue);
-      if (standard[note] - 2 <= pitchValue && pitchValue <= standard[note] + 2) {
+      if (tunings.standard[note] - 2 <= pitchValue && pitchValue <= tunings.standard[note] + 2) {
         isOnKey('GOOD');
-      } else if (pitchValue <= standard[note] - 2) {
+      } else if (pitchValue <= tunings.standard[note] - 2) {
         isOnKey('b');
-      } else if (pitchValue >= standard[note] - 2) {
+      } else if (pitchValue >= tunings.standard[note] - 2) {
         isOnKey('#');
       }
     }
@@ -186,7 +180,7 @@ const setdialPos = () => {
   let ac = autoCorrelate(buf, audioCtx.sampleRate);
   let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
   if (ac > -1) {
-    return (standard[note] - 2 <= pitchValue && pitchValue <= standard[note] + 2) ? 0 : (pitchValue <= standard[note] - 2 ? 500 : -500);
+    return (tunings.standard[note] - 2 <= pitchValue && pitchValue <= tunings.standard[note] + 2) ? 0 : (pitchValue <= tunings.standard[note] - 2 ? 200 : -200);
   }
 };
 
@@ -218,32 +212,13 @@ const dialStyles = () => {
             <span style={pitchStyle()}className='note-number'>{pitchScale}</span>
           </div>
           <div className='bottom-half'>
-            <span className='meter-left' style={{
-              width: (detune < 0 ? getDetunePercent(detune) : "50") + "%",
-            }}></span>
-            <span style={pitchStyle()} className='dial'>|</span>
-            <span className='meter-right' style={{
-              width: (detune > 0 ? getDetunePercent(detune) : "50") + "%",
-            }}></span>
+            <div className='dial' style={{ right: `${setdialPos()}px`, borderBottom: dialStyles(), }}>
+            </div>
           </div>
           <div className='pitch-text'>
             <span style={pitchStyle()}>{!findingPitch ? (pitch) : (<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}} ><span>{onKey}</span><span>{pitch}</span></div>)}</span>
           </div>
         </div>
-      </div>
-      <div
-      style={{
-        height: 0,
-        width: 0,
-        position: 'relative',
-        right: `${setdialPos()}px`,
-        borderRight: '3px solid transparent',
-        borderLeft: '3px solid transparent',
-        borderBottom: dialStyles(),
-        transition: '1s ease'
-      }}
-      >
-
       </div>
       <TunerButton/>
       <div className='tuner_strings'>
