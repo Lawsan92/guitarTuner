@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AudioContext }from '../contexts/AudioContext.js';
 import autoCorrelate from "../libs/AutoCorrelate.js";
+import { Navbar } from './Navbar.js';
 import {
   noteFromPitch,
   centsOffFromPitch,
@@ -43,6 +44,7 @@ const Tuner = () => {
   const [findingPitch, startFindingPitch] = useState(false);
   const [onKey, isOnKey] = useState('Play');
 
+  const [isOpen, setNavbar] = useState(false);
 
   const styles = {
     neutral: {
@@ -109,6 +111,33 @@ useEffect(() => {
   }
 }, [source]);
 
+//======== BUTTON ========
+const TunerButton = () => {
+
+  const styles = {
+    on: {
+      backgroundColor: '#fff',
+      color: '#5D81A3',
+      opacity: 1
+    },
+    off: {
+      backgroundColor: '#5D81A3',
+      color: '#fff',
+      opacity: 0.4
+    }
+  }
+
+  return (
+    <>
+      {!started ?
+        (<button className='tuner_btn' onClick={start} style={styles.off}>Start</button>)
+          :
+        (<button className='tuner_btn' onClick={stop} style={styles.on}>Stop</button>)
+      }
+    </>
+  );
+};
+
 const start = async () => {
   const input = await getMicInput();
 
@@ -138,7 +167,11 @@ const getMicInput = () => {
 };
 
 const pitchStyle = () => {
-  return (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? styles.offKey : (findingPitch && onKey === 'GOOD' ? styles.onKey : styles.neutral );
+  if (started) {
+    return (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? styles.offKey : (findingPitch && onKey === 'GOOD' ? styles.onKey : styles.neutral );
+  } else {
+    return styles.neutral;
+  }
 };
 
 const [dialPos, getPos] = useState(0);
@@ -147,6 +180,9 @@ const [dialPos, getPos] = useState(0);
 let dependency = 0;
 
 const setdialPos = () => {
+  if (!started) {
+    return 0
+  };
   let ac = autoCorrelate(buf, audioCtx.sampleRate);
   let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
   if (ac > -1) {
@@ -155,13 +191,19 @@ const setdialPos = () => {
 };
 
 const dialStyles = () => {
+  if (!started) {
+    return styles.dial.neutral;
+  }
   return (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? styles.dial.offKey : (findingPitch && onKey === 'GOOD' ? styles.dial.onKey : styles.dial.neutral );
 }
 
   return (
     <div className='tuner'>
-      <div className='tuner_tuning'>
-        Standard
+      <div className='tuner_navbar'>
+        <div className='tuner_tuning'>
+          Standard
+        </div>
+        <Navbar isOpen={isOpen} setNavbar={setNavbar}/>
       </div>
       <div className='notification' style={ notification ? {color:'white', backgroundColor: 'lightgrey'} : {color: 'white'}}>
       Please, bring your instrument near to the microphone!
@@ -203,13 +245,7 @@ const dialStyles = () => {
       >
 
       </div>
-      <div className='tuning-btn'>
-        {!started ?
-        (<button onClick={() => {start()}}>Start</button>)
-          :
-        (<button onClick={() => {stop()}}>Stop</button>)
-        }
-      </div>
+      <TunerButton/>
       <div className='tuner_strings'>
         {strings.map((string) => {
           return (

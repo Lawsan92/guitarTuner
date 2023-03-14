@@ -1,0 +1,30 @@
+.navbar_button {
+  height: 100px;
+  width: 100px;
+  background-color: #0000004d;
+  justify-self: flex-end;
+  margin: 1em;
+  border-radius: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+
+.navbar_bar{
+  height: 12px;
+  width: 70px;
+  margin: 5px;
+  border-radius: 5px;
+  background-color: #fff;
+  filter: drop-shadow(rgba(255, 255, 255, 0.4) 0px 2px 2px);
+}
+
+.navbar_body {
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  justify-self: flex-end;
+  position: absolute;
+}
