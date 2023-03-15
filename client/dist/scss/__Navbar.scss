@@ -23,8 +23,17 @@
 
 .navbar_body {
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(0, 0, 0, 0.3019607843);
   color: #fff;
   justify-self: flex-end;
   position: absolute;
+  & ul {
+    list-style: none;
+    & li {
+      margin: 5px;
+      font-size: 1.5em;
+    }
+
+  }
 }
+
