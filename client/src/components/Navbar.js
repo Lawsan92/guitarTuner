@@ -1,7 +1,8 @@
 import React,  { useState } from 'react';
 import { animated, useSpring } from '@react-spring/web';
+import { tunings } from '../data/tunings.js';
 
-export const Navbar = ({ isOpen, setNavbar }) => {
+export const Navbar = ({ isOpen, setNavbar, tuningHeader, setHeader }) => {
 
   const toggleNavbar = () => {
     setNavbar(prevState => !prevState);
@@ -18,6 +19,12 @@ export const Navbar = ({ isOpen, setNavbar }) => {
     })
   }
 
+  const mapTuningNames = () => {
+    return Object.keys(tunings).map((tuning) => {
+      return <li onClick={(e) => {setHeader(e.target.innerText)}}>{tuning}</li>
+    })
+  }
+
  if (!isOpen) {
   return (
     <div className='navbar_button' onClick={() => {handleSpring(); toggleNavbar()}} >
@@ -30,10 +37,7 @@ export const Navbar = ({ isOpen, setNavbar }) => {
   return (
     <animated.div className='navbar_body' style={{...springs}}>
       <ul>
-        <li>Standard</li>
-        <li>1/2 step down</li>
-        <li>Drop D</li>
-        <li>Esus2</li>
+        {mapTuningNames()}
       </ul>
     </animated.div>
   )

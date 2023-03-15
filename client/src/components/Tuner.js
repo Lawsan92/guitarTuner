@@ -40,6 +40,8 @@ const Tuner = () => {
 
   const [isOpen, setNavbar] = useState(false);
 
+  const [tuningHeader, setHeader] = useState();
+
   const styles = {
     neutral: {
       color: 'white',
@@ -68,11 +70,11 @@ const Tuner = () => {
       // log('audioCtx.sampleRate', audioCtx.sampleRate);
       // log('ac:', ac);
       // log('pitchValue:', pitchValue);
-      if (tunings.standard[note] - 2 <= pitchValue && pitchValue <= tunings.standard[note] + 2) {
+      if (tunings.Standard.module[note] - 2 <= pitchValue && pitchValue <= tunings.Standard.module[note] + 2) {
         isOnKey('GOOD');
-      } else if (pitchValue <= tunings.standard[note] - 2) {
+      } else if (pitchValue <= tunings.Standard.module[note] - 2) {
         isOnKey('b');
-      } else if (pitchValue >= tunings.standard[note] - 2) {
+      } else if (pitchValue >= tunings.Standard.module[note] - 2) {
         isOnKey('#');
       }
     }
@@ -170,9 +172,6 @@ const pitchStyle = () => {
 
 const [dialPos, getPos] = useState(0);
 
-
-let dependency = 0;
-
 const setdialPos = () => {
   if (!started) {
     return 0
@@ -180,7 +179,7 @@ const setdialPos = () => {
   let ac = autoCorrelate(buf, audioCtx.sampleRate);
   let pitchValue  = Number(pitch.split('').slice(0, -3).join(''));
   if (ac > -1) {
-    return (tunings.standard[note] - 2 <= pitchValue && pitchValue <= tunings.standard[note] + 2) ? 0 : (pitchValue <= tunings.standard[note] - 2 ? 200 : -200);
+    return (tunings.Standard.module[note] - 2 <= pitchValue && pitchValue <= tunings.Standard.module[note] + 2) ? 0 : (pitchValue <= tunings.Standard.module[note] - 2 ? 200 : -200);
   }
 };
 
@@ -189,15 +188,15 @@ const dialStyles = () => {
     return styles.dial.neutral;
   }
   return (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? styles.dial.offKey : (findingPitch && onKey === 'GOOD' ? styles.dial.onKey : styles.dial.neutral );
-}
+};
 
   return (
     <div className='tuner'>
       <div className='tuner_navbar'>
         <div className='tuner_tuning'>
-          Standard
+          {tuningHeader}
         </div>
-        <Navbar isOpen={isOpen} setNavbar={setNavbar}/>
+        <Navbar isOpen={isOpen} setNavbar={setNavbar} tuningHeader={tuningHeader} setHeader={setHeader} />
       </div>
       <div className='notification' style={ notification ? {color:'white', backgroundColor: 'lightgrey'} : {color: 'white'}}>
       Please, bring your instrument near to the microphone!
