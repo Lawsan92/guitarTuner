@@ -21,7 +21,7 @@
   ```
   2) navigate to repo on local computer
   ```
-  cd {repo name} 
+  cd <this repo> 
   ```
   3) install dependencies
   ```
@@ -33,7 +33,7 @@
   ```
   5) run script to start server
   ```
-  npm run server <br/>
+  npm run server 
   ```
   
  ## tech stack 
