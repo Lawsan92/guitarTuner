@@ -8,7 +8,8 @@ export const tunings = {
       B: 246.9,
       e: 329.6
     },
-    name: 'Standard'
+    name: 'Standard',
+    strings: [['E', 2], ['A', 2], ['D', 3], ['G', 3], ['B', 3], ['e', 4]]
   },
   '1/2 step down': {
     module: {
@@ -19,7 +20,8 @@ export const tunings = {
       Bb: 233.08,
       eb: 311.13
     },
-    name: '1/2 step down'
+    name: '1/2 step down',
+    strings: [['Eb', 2], ['Ab', 2], ['Db', 3], ['Gb', 3], ['Bb', 3], ['eb', 4]]
   },
   'Drop D': {
     module: {
@@ -30,6 +32,7 @@ export const tunings = {
     B: 246.9,
     e: 329.6
     },
-    name: 'Drop D'
+    name: 'Drop D',
+    strings: [['D', 2], ['A', 2], ['D', 3], ['G', 3], ['B', 3], ['e', 4]]
   }
 };

@@ -19,8 +19,6 @@ let log = console.log.bind(console);
 
 const noteStrings = [ "C", "C#","D", "D#", "E", "F", "F#", "G", "G#","A", "A#", "B" ];
 
-const strings = [['E', 2], ['A', 2], ['D', 3], ['G', 3], ['B', 3], ['e', 4]];
-
 const Tuner = () => {
 
 /*////AUDIO STATE////*/
@@ -41,6 +39,8 @@ const Tuner = () => {
   const [isOpen, setNavbar] = useState(false);
 
   const [tuningHeader, setHeader] = useState();
+
+  const [strings, setStrings] = useState();
 
   const styles = {
     neutral: {
@@ -190,18 +190,23 @@ const dialStyles = () => {
   return (findingPitch && onKey === 'b' || findingPitch && onKey === '#' ) ? styles.dial.offKey : (findingPitch && onKey === 'GOOD' ? styles.dial.onKey : styles.dial.neutral );
 };
 
+  const handleNav = (e) => {
+    console.log('e:', e)
+    e.currentTarget === e.target && setNavbar(false);
+  }
+
   return (
     <div className='tuner'>
       <div className='tuner_navbar'>
         <div className='tuner_tuning'>
           {tuningHeader}
         </div>
-        <Navbar isOpen={isOpen} setNavbar={setNavbar} tuningHeader={tuningHeader} setHeader={setHeader} />
+        <Navbar isOpen={isOpen} setNavbar={setNavbar} tuningHeader={tuningHeader} setHeader={setHeader} strings={strings} setStrings={setStrings}/>
       </div>
       <div className='notification' style={ notification ? {color:'white', backgroundColor: 'lightgrey'} : {color: 'white'}}>
       Please, bring your instrument near to the microphone!
       </div>
-      <div className ='tuner-container'>
+      <div className ='tuner-container'  onClick={(e) => {handleNav(e)}}>
         <div className='tuner_screen'>
           <div className='top-half'>
             <span className='note-letter'
@@ -221,7 +226,7 @@ const dialStyles = () => {
       </div>
       <TunerButton/>
       <div className='tuner_strings'>
-        {strings.map((string) => {
+        {strings && strings.map((string) => {
           return (
             <div>
             {!findingPitch ?

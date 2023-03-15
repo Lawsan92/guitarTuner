@@ -2,7 +2,7 @@ import React,  { useState } from 'react';
 import { animated, useSpring } from '@react-spring/web';
 import { tunings } from '../data/tunings.js';
 
-export const Navbar = ({ isOpen, setNavbar, tuningHeader, setHeader }) => {
+export const Navbar = ({ isOpen, setNavbar, tuningHeader, setHeader, strings, setStrings }) => {
 
   const toggleNavbar = () => {
     setNavbar(prevState => !prevState);
@@ -21,7 +21,11 @@ export const Navbar = ({ isOpen, setNavbar, tuningHeader, setHeader }) => {
 
   const mapTuningNames = () => {
     return Object.keys(tunings).map((tuning) => {
-      return <li onClick={(e) => {setHeader(e.target.innerText)}}>{tuning}</li>
+      return (
+        <li onClick={(e) => { setHeader(e.target.innerText); setStrings(tunings[tuning].strings)}}>
+          {tuning}
+        </li>
+      );
     })
   }
 
